@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qa-automation"
+version = "0.1.0"
+description = "QA automation portfolio repo (UI + API) using Selenium + Pytest + Allure"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Elad" }]
+
+# Dependencies are intentionally managed via requirements.txt
+# This avoids duplication and keeps the repo easy to maintain
+dependencies = []
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.setuptools.package-data]
+"src.data" = ["*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+  "api: API tests",
+  "ui: UI tests",
+  "integration: Integration tests",
+  "smoke: Smoke tests",
+]
