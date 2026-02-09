@@ -17,3 +17,4 @@ class Settings:
     headless: bool = _get_bool("HEADLESS", True)
 
 settings = Settings()
+
