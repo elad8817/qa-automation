@@ -33,11 +33,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
-      - name: Install Google Chrome + ChromeDriver
+      - name: Install Google Chrome
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: "latest"
-          install-chromedriver: "true"
+
 
       - name: Install dependencies
         run: |
