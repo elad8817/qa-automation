@@ -2,8 +2,10 @@ import allure
 import pytest
 import json
 from src.ui.pages.login_flow_page import LoginFlowPage
+from src.utils.paths import DATA_DIR
 
-with open("../../src/data/testdata.json", "r") as f:
+
+with open(DATA_DIR / "testdata.json") as f:
     test_data = json.load(f)
 
 admin_credentials = test_data["Valid_users"][0]
@@ -19,10 +21,10 @@ def test_login_without_Credentials(driver, cfg):
         page.open()
 
     with allure.step("Click login button"):
-        page.click_login()
+        page.click_button("Login")
 
     with allure.step("Validate - Error message 'Both fields are required.' is shown"):
-        assert page.exists(page.EMPTY_ERROR), "Error not found, validation may have failed"
+        assert page.check_error("Both fields are required."), "Error not found, validation may have failed"
 
 @allure.feature("UI")
 @allure.story("LF_002 - Invalid credentials")
@@ -37,10 +39,10 @@ def test_login_invalid_credentials(driver, cfg):
             page.enter_password(users["password"])
 
         with allure.step("Click login button"):
-            page.click_login()
+            page.click_button("Login")
 
         with allure.step("Validate - Error message 'Invalid username or password.' is shown"):
-            assert page.exists(page.INVALID_ERROR), "Error not found, validation may have failed"
+            assert page.check_error("Invalid username or password."), "Error not found, validation may have failed"
 
 
 @allure.feature("UI")
@@ -56,15 +58,15 @@ def test_login_user_credentials(driver, cfg):
         page.enter_password(user_credentials["password"])
 
     with allure.step("Click login button"):
-        page.click_login()
+        page.click_button("Login")
 
     with allure.step("Validate - User dashboard is displayed with welcome message and User role info"):
-        assert page.text_of(page.DASHBOARD) == "User Dashboard", "User Dashboard welcome message not found, login may have failed"
-        assert page.exists(page.USER_ALERT), "User alert not found, login may have failed"
+        assert page.return_dashboard_text() == "User Dashboard", "User Dashboard welcome message not found, login may have failed"
+        assert page.check_alert("USER"), "User alert not found, login may have failed"
 
 
 @allure.feature("UI")
-@allure.story("Login flow with admin credentials")
+@allure.story("LF_004 - Login as Admin")
 @pytest.mark.ui
 def test_login_flow_admin(driver, cfg):
     with allure.step("Open login page"):
@@ -76,16 +78,14 @@ def test_login_flow_admin(driver, cfg):
         page.enter_password(admin_credentials["password"])
 
     with allure.step("Click login button"):
-        page.click_login()
+        page.click_button("Login")
 
-    with allure.step("Validate login result"):
-        # Example: check for successful login, adjust as needed
-        assert page.text_of(
-            page.DASHBOARD) == "Admin Dashboard", "Admin Dashboard welcome message not found, login may have failed"
-        assert page.exists(page.ADMIN_ALERT), "Admin alert not found, login may have failed"
+    with allure.step("Validate - Admin dashboard is displayed with welcome message and Admin role info"):
+        assert page.return_dashboard_text() == "Admin Dashboard", "Admin Dashboard welcome message not found, login may have failed"
+        assert page.check_alert("ADMIN"), "Admin alert not found, login may have failed"
 
 @allure.feature("UI")
-@allure.story("Login flow with admin credentials")
+@allure.story("LF_005 - Logout functionality")
 @pytest.mark.ui
 def test_login_logout(driver, cfg):
     with allure.step("Open login page"):
@@ -98,16 +98,14 @@ def test_login_logout(driver, cfg):
             page.enter_password(users["password"])
 
         with allure.step("Click login button"):
-            page.click_login()
+            page.click_button("Login")
 
         with allure.step("Validate login result"):
-            # Example: check for successful login, adjust as needed
-            assert page.exists(page.ADMIN_ALERT) or page.exists(page.USER_ALERT), "Admin/User alert not found, login may have failed"
+            assert page.check_alert("ADMIN") or page.check_alert("USER"), "Admin/User alert not found, login may have failed"
 
         with allure.step("Click logout button"):
-            page.click_logout()
+            page.click_button("Logout")
 
-        with allure.step("Validate logout result"):
-            # Example: check for successful login, adjust as needed
-            assert page.get_attribute_local(page.USERNAME, "value") == "", "Username field not cleared after logout"
-            assert page.get_attribute_local(page.PASSWORD, "value") == "", "Password field not cleared after logout"
+        with allure.step("Validate - Session is cleared and login form is displayed again"):
+            assert page.wait_clickable(page.USERNAME).get_attribute("value") == "", "Username field not cleared after logout"
+            assert page.wait_clickable(page.PASSWORD).get_attribute("value") == "", "Password field not cleared after logout"

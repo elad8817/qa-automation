@@ -8,22 +8,21 @@ class LoginFlowPage(BasePage):
     # Locators
     USERNAME = (By.XPATH, "//input[@type='text']")
     PASSWORD = (By.XPATH, "//input[@type='password']")
-    LOGIN_BTN = (By.XPATH, "//button[normalize-space()='Login']")
-    ADMIN_ALERT = (By.XPATH, "//strong[normalize-space()='ADMIN']")
-    USER_ALERT = (By.XPATH, "//strong[normalize-space()='USER']")
-    EMPTY_ERROR = (By.XPATH, "//div[contains(text(),'Both fields are required.')]")
-    INVALID_ERROR = (By.XPATH, "//div[contains(text(),'Invalid username or password.')]")
-    DASHBOARD = (By.XPATH, "//p[@class='MuiTypography-root MuiTypography-body1 font-medium css-1o5u7u9']")
-    LOGOUT_BTN = (By.XPATH, "//button[normalize-space()='Logout']")
 
     def enter_username(self, username: str) -> None:
-        self.type(self.USERNAME, username, clear=False)
+        self.type(self.USERNAME, username)
 
     def enter_password(self, password: str) -> None:
         self.type(self.PASSWORD, password)
 
-    def click_login(self) -> None:
-        self.click(self.LOGIN_BTN)
+    def check_alert(self, role: str) -> bool:
+        return self.exists((By.XPATH, f"//strong[normalize-space()='{role.upper()}']"))
 
-    def click_logout(self) -> None:
-        self.click(self.LOGOUT_BTN)
+    def check_error(self, error_message: str) -> bool:
+         return self.exists((By.XPATH, f"//div[contains(text(),'{error_message}')]"))
+
+    def return_dashboard_text(self) -> str:
+        return self.text_of((By.XPATH, "//p[@class='MuiTypography-root MuiTypography-body1 font-medium css-1o5u7u9']"))
+
+    def click_button(self, button: str) -> None:
+        self.click((By.XPATH, f"//button[normalize-space()='{button}']"))
