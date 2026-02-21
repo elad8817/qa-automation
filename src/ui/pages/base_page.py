@@ -69,6 +69,8 @@ class BasePage:
 
     def text_of(self, locator: Locator) -> str:
         return self.wait_visible(locator).text.strip()
+    def get_attribute_local(self, locator: Locator, attrName) -> str:
+        return self.wait_visible(locator).get_attribute(attrName)
 
     def all(self, locator: Locator) -> list[WebElement]:
         self.wait_present(locator)

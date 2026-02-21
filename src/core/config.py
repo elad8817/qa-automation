@@ -12,7 +12,7 @@ def _get_bool(name: str, default: bool = False) -> bool:
 
 @dataclass(frozen=True)
 class Settings:
-    base_url: str = os.getenv("BASE_URL", "https://the-internet.herokuapp.com")
+    base_url: str = os.getenv("BASE_URL", "https://www.cnarios.com")
     api_base_url: str = os.getenv("API_BASE_URL", "https://httpbin.org")
     headless: bool = _get_bool("HEADLESS", True)
 

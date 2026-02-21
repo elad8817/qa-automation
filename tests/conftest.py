@@ -4,9 +4,37 @@ from src.core.config import settings
 from src.api.client import ApiClient
 from src.ui.drivers import create_chrome_driver
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--headless",
+        action="store",
+        default=None,
+        help="Run browser in headless mode (true/false)",
+    )
+
 @pytest.fixture(scope="session")
 def cfg():
     return settings
+
+@pytest.fixture(scope="session")
+def cfg(pytestconfig):
+    from src.core.config import Settings
+    import distutils.util
+
+    headless_opt = pytestconfig.getoption("headless")
+    if headless_opt is not None:
+        # Convert string to bool
+        headless = bool(distutils.util.strtobool(headless_opt))
+        from src.core.config import settings as orig_settings
+        # Override only headless, keep other settings
+        return Settings(
+            base_url=orig_settings.base_url,
+            api_base_url=orig_settings.api_base_url,
+            headless=headless,
+        )
+    else:
+        from src.core.config import settings
+        return settings
 
 @pytest.fixture(scope="session")
 def api(cfg):
