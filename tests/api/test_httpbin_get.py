@@ -1,7 +1,7 @@
 import allure
 import pytest
-
-@allure.feature("API")
+allure.epic("API Testing")
+@allure.feature("Checking httpbin GET endpoints")
 @allure.story("GET /get echoes query params")
 @pytest.mark.api
 def test_get_echoes_args(api):
