@@ -19,12 +19,10 @@ def cfg():
 @pytest.fixture(scope="session")
 def cfg(pytestconfig):
     from src.core.config import Settings
-    import distutils.util
 
     headless_opt = pytestconfig.getoption("headless")
     if headless_opt is not None:
-        # Convert string to bool
-        headless = bool(distutils.util.strtobool(headless_opt))
+        headless = headless_opt
         from src.core.config import settings as orig_settings
         # Override only headless, keep other settings
         return Settings(
