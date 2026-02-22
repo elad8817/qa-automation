@@ -12,7 +12,8 @@ admin_credentials = test_data["Valid_users"][0]
 user_credentials = test_data["Valid_users"][1]
 
 
-@allure.feature("UI")
+@allure.feature("Login page")
+@allure.severity(allure.severity_level.CRITICAL)
 @allure.story("LF_001 - Empty fields validation")
 @pytest.mark.ui
 def test_login_without_Credentials(driver, cfg):
@@ -26,7 +27,7 @@ def test_login_without_Credentials(driver, cfg):
     with allure.step("Validate - Error message 'Both fields are required.' is shown"):
         assert page.check_error("Both fields are required."), "Error not found, validation may have failed"
 
-@allure.feature("UI")
+@allure.feature("Login page")
 @allure.story("LF_002 - Invalid credentials")
 @pytest.mark.ui
 def test_login_invalid_credentials(driver, cfg):
@@ -34,7 +35,7 @@ def test_login_invalid_credentials(driver, cfg):
         page = LoginFlowPage(driver, cfg.base_url)
         page.open()
     for users in test_data["Invalid_users"]:
-        with allure.step("Enter Invalid credentials"):
+        with allure.step(f"Enter Invalid credentials: {users['username']}"):
             page.enter_username(users["username"])
             page.enter_password(users["password"])
 
@@ -45,7 +46,7 @@ def test_login_invalid_credentials(driver, cfg):
             assert page.check_error("Invalid username or password."), "Error not found, validation may have failed"
 
 
-@allure.feature("UI")
+@allure.feature("Login page")
 @allure.story("LF_003 - Login as User")
 @pytest.mark.ui
 def test_login_user_credentials(driver, cfg):
@@ -65,7 +66,7 @@ def test_login_user_credentials(driver, cfg):
         assert page.check_alert("USER"), "User alert not found, login may have failed"
 
 
-@allure.feature("UI")
+@allure.feature("Login page")
 @allure.story("LF_004 - Login as Admin")
 @pytest.mark.ui
 def test_login_flow_admin(driver, cfg):
@@ -84,7 +85,7 @@ def test_login_flow_admin(driver, cfg):
         assert page.return_dashboard_text() == "Admin Dashboard", "Admin Dashboard welcome message not found, login may have failed"
         assert page.check_alert("ADMIN"), "Admin alert not found, login may have failed"
 
-@allure.feature("UI")
+@allure.feature("Login page")
 @allure.story("LF_005 - Logout functionality")
 @pytest.mark.ui
 def test_login_logout(driver, cfg):
@@ -93,7 +94,7 @@ def test_login_logout(driver, cfg):
         page.open()
 
     for users in test_data["Valid_users"]:
-        with allure.step("Enter admin credentials"):
+        with allure.step(f"Enter admin credentials: {users['username']}"):
             page.enter_username(users["username"])
             page.enter_password(users["password"])
 
