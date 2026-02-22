@@ -1,0 +1,12 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","0","test_login_user_credentials","tests.ui","Sun Feb 22 10:36:47 UTC 2026","broken","Sun Feb 22 10:36:47 UTC 2026","","test_login_flow","",""
+"","0","test_homepage_title","tests.ui","Sun Feb 22 10:36:48 UTC 2026","broken","Sun Feb 22 10:36:48 UTC 2026","","test_login_page_title","",""
+"","0","test_login_invalid_credentials","tests.ui","Sun Feb 22 10:36:47 UTC 2026","broken","Sun Feb 22 10:36:47 UTC 2026","","test_login_flow","",""
+"","0","test_get_echoes_args","tests.api","Sun Feb 22 10:36:47 UTC 2026","broken","Sun Feb 22 10:36:47 UTC 2026","","test_httpbin_get","",""
+"","0","test_login_flow_admin","tests.ui","Sun Feb 22 10:36:48 UTC 2026","broken","Sun Feb 22 10:36:48 UTC 2026","","test_login_flow","",""
+"","0","test_login_logout","tests.ui","Sun Feb 22 10:36:48 UTC 2026","broken","Sun Feb 22 10:36:48 UTC 2026","","test_login_flow","",""
+"","0","test_login_without_Credentials","tests.ui","Sun Feb 22 10:36:47 UTC 2026","broken","Sun Feb 22 10:36:47 UTC 2026","","test_login_flow","",""
+"
+    Simple sanity test to ensure CI pipeline is wired correctly.
+    Remove once real tests are added.
+    ","1","test_ci_sanity","tests","Sun Feb 22 10:36:47 UTC 2026","passed","Sun Feb 22 10:36:47 UTC 2026","","test_ci_sanity","",""
