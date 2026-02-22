@@ -1,0 +1,12 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+    Simple sanity test to ensure CI pipeline is wired correctly.
+    Remove once real tests are added.
+    ","0","test_ci_sanity","tests","Sun Feb 22 11:08:55 UTC 2026","passed","Sun Feb 22 11:08:55 UTC 2026","","test_ci_sanity","",""
+"","1559","test_login_invalid_credentials","tests.ui","Sun Feb 22 11:09:03 UTC 2026","passed","Sun Feb 22 11:09:05 UTC 2026","","test_login_flow","",""
+"","529","test_homepage_title","tests.ui","Sun Feb 22 11:09:09 UTC 2026","passed","Sun Feb 22 11:09:10 UTC 2026","","test_login_page_title","",""
+"","1375","test_login_without_Credentials","tests.ui","Sun Feb 22 11:09:01 UTC 2026","passed","Sun Feb 22 11:09:03 UTC 2026","","test_login_flow","",""
+"","222","test_get_echoes_args","tests.api","Sun Feb 22 11:08:54 UTC 2026","passed","Sun Feb 22 11:08:55 UTC 2026","","test_httpbin_get","",""
+"","875","test_login_user_credentials","tests.ui","Sun Feb 22 11:09:05 UTC 2026","passed","Sun Feb 22 11:09:06 UTC 2026","","test_login_flow","",""
+"","1232","test_login_logout","tests.ui","Sun Feb 22 11:09:07 UTC 2026","passed","Sun Feb 22 11:09:09 UTC 2026","","test_login_flow","",""
+"","843","test_login_flow_admin","tests.ui","Sun Feb 22 11:09:06 UTC 2026","passed","Sun Feb 22 11:09:07 UTC 2026","","test_login_flow","",""
