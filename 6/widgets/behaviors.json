@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"f60af6345838421e12f3813e722feb04","name":"Checking httpbin GET endpoints","statistic":{"failed":0,"broken":0,"skipped":0,"passed":1,"unknown":0,"total":1}},{"uid":"d73ed744dc3d3d5e2ab52ef748cb9bfb","name":"UI testing","statistic":{"failed":0,"broken":0,"skipped":0,"passed":1,"unknown":0,"total":1}}]}
