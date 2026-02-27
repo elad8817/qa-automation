@@ -1,37 +1,49 @@
 import allure
 import pytest
-import json
+
 from src.ui.pages.login_flow_page import LoginFlowPage
-from src.utils.paths import DATA_DIR
+from src.utils.testdata import load_json
+
+users_data = load_json("users.json")
+login_data = load_json("login_assertions.json")
 
 
-with open(DATA_DIR / "testdata.json") as f:
-    test_data = json.load(f)
+VALID_USERS = users_data["Valid_users"]
+INVALID_USERS = users_data["Invalid_users"]
+ADMIN_CREDENTIALS = next(user for user in VALID_USERS if user["username"] == "admin")
+STANDARD_USER_CREDENTIALS = next(user for user in VALID_USERS if user["username"] == "user")
 
-admin_credentials = test_data["Valid_users"][0]
-user_credentials = test_data["Valid_users"][1]
 
 @pytest.fixture(scope="function", autouse=True)
 def set_allure_labels():
     allure.dynamic.epic("UI testing")
     allure.dynamic.feature("User Authentication System")
 
+
+@pytest.fixture
+def login_page(driver, cfg):
+    page = LoginFlowPage(driver, cfg.base_url)
+    page.open()
+    return page
+
+
+def login_with_credentials(page: LoginFlowPage, credentials: dict[str, str]) -> None:
+    page.enter_username(credentials["username"])
+    page.enter_password(credentials["password"])
+    page.click_button("Login")
+
+
 @allure.tag("Priority: High", "Type: Negative")
 @allure.id("LF_001")
 @allure.story("User will be prompted to enter credentials if they attempt to login without providing them")
 @allure.description("This test verifies that if a user tries to login without entering username and password, an appropriate error message is displayed")
 @pytest.mark.ui
-def test_login_without_credentials(driver, cfg):
-    with allure.step("Open login page"):
-        page = LoginFlowPage(driver, cfg.base_url)
-        page.open()
-
+def test_login_without_credentials(login_page):
     with allure.step("Click login button"):
-        page.click_button("Login")
+        login_page.click_button("Login")
 
-    with allure.step("Validate - Error message 'Both fields are required.' is shown"):
-        assert page.check_error("Both fields are required."), "Error not found, validation may have failed"
-
+    with allure.step("Validate required fields error is shown"):
+        assert login_page.check_error(login_data["errors"]["required_fields"])
 
 
 @allure.tag("Priority: High", "Type: Negative")
@@ -39,22 +51,13 @@ def test_login_without_credentials(driver, cfg):
 @allure.story("User quickly realizes that they have entered incorrect credentials and is prompted with an error message")
 @allure.description("This test verifies that if a user enters invalid credentials, an appropriate error message is displayed")
 @pytest.mark.ui
-@pytest.mark.parametrize("credentials", test_data["Invalid_users"])
-def test_login_invalid_credentials(driver, cfg, credentials):
-    with allure.step("Open login page"):
-        page = LoginFlowPage(driver, cfg.base_url)
-        page.open()
-
+@pytest.mark.parametrize("credentials", INVALID_USERS)
+def test_login_invalid_credentials(login_page, credentials):
     with allure.step(f"Enter invalid credentials: {credentials['username']}"):
-        page.enter_username(credentials["username"])
-        page.enter_password(credentials["password"])
+        login_with_credentials(login_page, credentials)
 
-    with allure.step("Click login button"):
-        page.click_button("Login")
-
-    with allure.step("Validate - Error message 'Invalid username or password.' is shown"):
-        assert page.check_error("Invalid username or password."), "Error not found, validation may have failed"
-
+    with allure.step("Validate invalid credentials error is shown"):
+        assert login_page.check_error(login_data["errors"]["invalid_credentials"])
 
 
 @allure.tag("Priority: High", "Type: Positive")
@@ -62,21 +65,13 @@ def test_login_invalid_credentials(driver, cfg, credentials):
 @allure.story("User successfully logs in with valid credentials and is directed to the appropriate dashboard based on their role")
 @allure.description("This test verifies that when a user enters valid credentials, they are successfully logged in and directed to the correct dashboard based on their role (User)")
 @pytest.mark.ui
-def test_login_user_credentials(driver, cfg):
-    with allure.step("Open login page"):
-        page = LoginFlowPage(driver, cfg.base_url)
-        page.open()
-
+def test_login_user_credentials(login_page):
     with allure.step("Enter user credentials"):
-        page.enter_username(user_credentials["username"])
-        page.enter_password(user_credentials["password"])
+        login_with_credentials(login_page, STANDARD_USER_CREDENTIALS)
 
-    with allure.step("Click login button"):
-        page.click_button("Login")
-
-    with allure.step("Validate - User dashboard is displayed with welcome message and User role info"):
-        assert page.return_dashboard_text() == "User Dashboard", "User Dashboard welcome message not found, login may have failed"
-        assert page.check_alert("USER"), "User alert not found, login may have failed"
+    with allure.step("Validate user dashboard and role"):
+        assert login_page.return_dashboard_text() == login_data["dashboards"]["user"]
+        assert login_page.check_alert(login_data["roles"]["user"])
 
 
 @allure.tag("Priority: High", "Type: Positive")
@@ -84,46 +79,31 @@ def test_login_user_credentials(driver, cfg):
 @allure.story("User successfully logs in with valid credentials and is directed to the appropriate dashboard based on their role")
 @allure.description("This test verifies that when a user enters valid credentials, they are successfully logged in and directed to the correct dashboard based on their role (Admin)")
 @pytest.mark.ui
-def test_login_flow_admin(driver, cfg):
-    with allure.step("Open login page"):
-        page = LoginFlowPage(driver, cfg.base_url)
-        page.open()
-
+def test_login_flow_admin(login_page):
     with allure.step("Enter admin credentials"):
-        page.enter_username(admin_credentials["username"])
-        page.enter_password(admin_credentials["password"])
+        login_with_credentials(login_page, ADMIN_CREDENTIALS)
 
-    with allure.step("Click login button"):
-        page.click_button("Login")
+    with allure.step("Validate admin dashboard and role"):
+        assert login_page.return_dashboard_text() == login_data["dashboards"]["admin"]
+        assert login_page.check_alert(login_data["roles"]["admin"])
 
-    with allure.step("Validate - Admin dashboard is displayed with welcome message and Admin role info"):
-        assert page.return_dashboard_text() == "Admin Dashboard", "Admin Dashboard welcome message not found, login may have failed"
-        assert page.check_alert("ADMIN"), "Admin alert not found, login may have failed"
 
 @allure.tag("Priority: High", "Type: Positive")
 @allure.id("LF_005")
 @allure.story("User able to logout successfully and is returned to the login page")
 @allure.description("This test verifies that after a user logs in successfully, they can click the logout button and are returned to the login page with the session cleared")
 @pytest.mark.ui
-@pytest.mark.parametrize("credentials", test_data["Valid_users"])
-def test_login_logout(driver, cfg, credentials):
-    with allure.step("Open login page"):
-        page = LoginFlowPage(driver, cfg.base_url)
-        page.open()
+@pytest.mark.parametrize("credentials", VALID_USERS)
+def test_login_logout(login_page, credentials):
+    with allure.step(f"Login with valid credentials: {credentials['username']}"):
+        login_with_credentials(login_page, credentials)
 
-    with allure.step(f"Enter valid credentials: {credentials['username']}"):
-        page.enter_username(credentials["username"])
-        page.enter_password(credentials["password"])
-
-    with allure.step("Click login button"):
-        page.click_button("Login")
-
-    with allure.step("Validate login result"):
-        assert page.check_alert("ADMIN") or page.check_alert("USER"), "Admin/User alert not found, login may have failed"
+    with allure.step("Validate user role alert appears"):
+        assert login_page.check_alert(login_data["roles"]["admin"]) or login_page.check_alert(login_data["roles"]["user"])
 
     with allure.step("Click logout button"):
-        page.click_button("Logout")
+        login_page.click_button("Logout")
 
-    with allure.step("Validate - Session is cleared and login form is displayed again"):
-        assert page.wait_clickable(page.USERNAME).get_attribute("value") == "", "Username field not cleared after logout"
-        assert page.wait_clickable(page.PASSWORD).get_attribute("value") == "", "Password field not cleared after logout"
+    with allure.step("Validate session is cleared"):
+        assert login_page.wait_clickable(login_page.USERNAME).get_attribute("value") == ""
+        assert login_page.wait_clickable(login_page.PASSWORD).get_attribute("value") == ""
