@@ -1,0 +1,44 @@
+{
+  "Valid_users": [
+    {
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "username": "user",
+      "password": "user123"
+    }
+  ],
+  "Invalid_users": [
+    {
+      "username": "admin",
+      "password": "wrongpassword"
+    },
+    {
+      "username": "user",
+      "password": "wrongpassword"
+    },
+    {
+      "username": "wrongadmin",
+      "password": "admin123"
+    },
+    {
+      "username": "wronguser",
+      "password": "user123"
+    }
+    ],
+    "Empty_fields": [
+        {
+        "username": "",
+        "password": ""
+        },
+        {
+        "username": "admin",
+        "password": ""
+        },
+        {
+        "username": "",
+        "password": "admin123"
+        }
+    ]
+}
