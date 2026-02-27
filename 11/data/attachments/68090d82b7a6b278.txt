@@ -1,0 +1,6 @@
+Collected categories and counts: (('Books', '10'), ('Sports', '10'), ('Home', '10'), ('Clothing', '10'), ('Electronics', '10'))
+Checking category: Books with expected count: 10
+Checking category: Sports with expected count: 10
+Checking category: Home with expected count: 10
+Checking category: Clothing with expected count: 10
+Checking category: Electronics with expected count: 10
