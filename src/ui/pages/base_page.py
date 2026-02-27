@@ -1,13 +1,10 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Tuple, Optional
-
 from selenium.webdriver.remote.webdriver import WebDriver, WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 
 Locator = Tuple[str, str]
 
@@ -15,7 +12,6 @@ Locator = Tuple[str, str]
 @dataclass(frozen=True)
 class BaseUrls:
     base_url: str
-
 
 class BasePage:
     """

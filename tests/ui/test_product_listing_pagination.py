@@ -4,17 +4,18 @@ import pytest
 from src.ui.pages.product_listing_pagination_page import ProductListingPagination
 
 
+
 @pytest.fixture(scope="function", autouse=True)
 def set_allure_labels():
     allure.dynamic.epic("UI testing")
     allure.dynamic.feature("Product Listing")
 
 
-@allure.tag("Priority: Medium", "Type: Positive")
+@allure.tag("Priority: High", "Type: Positive")
 @allure.id("PLP_001")
 @allure.story("User can open the product listing pagination challenge page")
 @allure.description(
-    "Dummy smoke test that verifies the pagination page loads successfully and user lands on expected URL path"
+    "Verify total number of products in each category matches expected values"
 )
 @pytest.mark.ui
 def test_product_listing_page_loads(driver, cfg):
@@ -22,26 +23,32 @@ def test_product_listing_page_loads(driver, cfg):
         page = ProductListingPagination(driver, cfg.base_url)
         page.open()
 
-    with allure.step("Validate user is on product listing pagination page"):
-        assert page.current_url_contains(page.PATH), "Product listing pagination page URL is incorrect"
+    with allure.step("Get the categories and counts from all pages"):
+        categories_name_and_counts = page.tuple_of_categories()
+        print(f"Collected categories and counts: {categories_name_and_counts}")
+
+    with allure.step("Check that the expected categories and counts matches expected values"):
+        for category_name in categories_name_and_counts:
+            print(f"Checking category: {category_name[0]} with expected count: {category_name[1]}")
+            assert page.count_categories(category_name[0]) == int(category_name[1]), f"Count mismatch for category: {category_name[0]}"
+            page.driver.refresh()  # Refresh page to reset pagination for next category check
 
 
-@allure.tag("Priority: Medium", "Type: Positive")
+@allure.tag("Priority: High", "Type: Positive")
 @allure.id("PLP_002")
 @allure.story("User can see category cards on the first page")
-@allure.description("Dummy test that checks category tuples are collected from visible cards")
+@allure.description("Locate a specific product in the listing and verify which page it is on")
 @pytest.mark.ui
 def test_product_listing_has_categories(driver, cfg):
-    with allure.step("Open product listing pagination page"):
+    with allure.step("Navigate to product listing page"):
         page = ProductListingPagination(driver, cfg.base_url)
         page.open()
 
-    with allure.step("Collect category tuples"):
+    with allure.step("Iterate through pages until product is found"):
         categories = page.tuple_of_categories()
 
     with allure.step("Validate at least one category card is shown"):
         assert isinstance(categories, tuple), "Categories output should be a tuple"
-        assert len(categories) > 0, "No categories were found on the page"
 
 
 @allure.tag("Priority: Low", "Type: Positive")

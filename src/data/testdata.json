@@ -26,6 +26,36 @@
       "username": "wronguser",
       "password": "user123"
     }
+  ],
+  "products": [{
+      "name": "Under Armour Running Shoes",
+      "category": "Clothing",
+      "price": 99.99,
+      "stars": 5
+  },
+    {
+        "name": "Apple iPhone 14 Pro",
+        "category": "Electronics",
+        "price": 999.99,
+        "stars": 5
+    },
+    {
+        "name": "Breville Barista Express",
+        "category": "Home",
+        "price": 599.99,
+        "stars": 5
+    },
+    {
+        "name": "Speedo Swim Goggles",
+        "category": "Sports",
+        "price": 14.99,
+        "stars": 4
+    },
+    {
+        "name": "Atomic Habits",
+        "category": "Books",
+        "price": 15.99,
+        "stars": 5
+    }
   ]
-
 }
