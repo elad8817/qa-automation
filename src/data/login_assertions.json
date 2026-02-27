@@ -1,0 +1,14 @@
+{
+  "errors": {
+    "required_fields": "Both fields are required.",
+    "invalid_credentials": "Invalid username or password."
+  },
+  "dashboards": {
+    "admin": "Admin Dashboard",
+    "user": "User Dashboard"
+  },
+  "roles": {
+    "admin": "ADMIN",
+    "user": "USER"
+  }
+}
