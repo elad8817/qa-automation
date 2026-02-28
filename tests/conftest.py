@@ -76,6 +76,35 @@ def attach_test_logs(request, test_logger):
             attachment_type=allure.attachment_type.TEXT,
         )
 
+    TEST_LOGS_DIR.mkdir(exist_ok=True)
+
+
+@pytest.fixture(autouse=True)
+def attach_test_logs(request):
+    node_id = re.sub(r"[^A-Za-z0-9_.-]+", "_", request.node.nodeid)
+    log_path = TEST_LOGS_DIR / f"{node_id}.log"
+
+    file_handler = logging.FileHandler(log_path, mode="w", encoding="utf-8")
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(
+        logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    )
+
+    root_logger = logging.getLogger()
+    root_logger.addHandler(file_handler)
+
+    yield
+
+    root_logger.removeHandler(file_handler)
+    file_handler.close()
+
+    if log_path.exists():
+        allure.attach.file(
+            str(log_path),
+            name="test_log",
+            attachment_type=allure.attachment_type.TEXT,
+        )
+
 
 @pytest.fixture(scope="session")
 def cfg(pytestconfig):
