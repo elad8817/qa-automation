@@ -145,6 +145,31 @@ allure serve allure-results
 
 > You need Allure CLI installed on your machine for `allure serve`.
 
+### Test logs in Allure (how to use)
+
+- Each test now writes a per-test log file under `test-logs/` and attaches it to the Allure test result as `test_log`.
+- Open a test case in Allure, then open the `test_log` attachment to see the timeline for that specific test.
+- By default, each log contains automatic lifecycle entries:
+  - `START test: ...`
+  - `END test: ... (status=passed|failed)`
+
+To add your own log lines from tests, use Python logging in the test body:
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+def test_example(api):
+    logger.info("Calling GET /get with hello=world")
+    response = api.get("/get", params={"hello": "world"})
+    logger.info("Response status code: %s", response.status_code)
+    assert response.status_code == 200
+```
+
+Any `logger.info(...)`, `logger.warning(...)`, or `logger.error(...)` emitted during that test will be written into the same per-test log file and available in Allure.
+
 ## Current test coverage snapshot
 
 ### UI (`tests/ui/test_login_flow.py`)
